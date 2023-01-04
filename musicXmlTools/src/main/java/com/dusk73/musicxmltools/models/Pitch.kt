@@ -1,6 +1,6 @@
 package com.dusk73.musicxmltools.models
 
-data class Pith(
+data class Pitch(
     val step: String,
     val octave: Int,
 )
