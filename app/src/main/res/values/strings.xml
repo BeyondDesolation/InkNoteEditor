@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">DNoteEditor</string>
+    <string name="app_name">Ink Note Editor</string>
+
+    <string name="note_whole">𝅝</string>
+    <string name="note_half">𝅗𝅥</string>
+    <string name="note_quarter">𝅘𝅥</string>
+    <string name="note_eight">𝅘𝅥𝅮</string>
+    <string name="note_16th">𝅘𝅥𝅯</string>
+    <string name="note_32nd">𝅘𝅥𝅰</string>
+    <string name="note_64th">𝅘𝅥𝅱</string>
+
+    <string name="rest">𝄽</string>
+    <string name="delete">✖</string>
+    <string name="sharp">♯</string>
+    <string name="flat">♭</string>
+    <string name="natural">♮</string>
+
+    <string name="fife_line_staff">𝄚</string>
+    <string name="add_fife_line_staff">+𝄚</string>
+    <string name="remove_fife_line_staff">-𝄚</string>
+    <string name="note_dots">𝅘𝅥 𝅭 </string>
+
+    <string name="save">Сохранить</string>
+
+
 </resources>

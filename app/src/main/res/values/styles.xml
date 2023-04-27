@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ButtonStyle1" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center</item>
+
+        <item name="android:textSize">30sp</item>
+        <item name="backgroundTint">@color/main_2</item>
+        <item name="android:textColor">@color/white</item>
+
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <style name="PrimaryFlatButton" parent="ThemeOverlay.AppCompat">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="android:colorButtonNormal">@color/main_3</item>
+
+        <item name="colorAccent">@color/main_1</item>
+    </style>
+</resources>

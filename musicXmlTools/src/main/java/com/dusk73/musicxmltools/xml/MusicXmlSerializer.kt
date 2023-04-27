@@ -8,25 +8,25 @@ import java.io.IOException
 
 class MusicXmlSerializer {
 
-    private val scorePart = ScorePart("P1", "Part 1")
-    private val partList = PartList(listOf(scorePart))
-
-    private val pitch = Pitch("C", 4)
-    private val note = Note(pitch, 4, "whole")
-
-    private val clef = Clef("G", 2)
-    private val time = Time(4, 4)
-    private val key = Key(0)
-    private val attributes = Attributes(1, key, time, clef)
-
-    private val measure = Measure(1, attributes, listOf(note))
-    private val part = Part("P1", listOf(measure))
-
-    private val scorePartwise = ScorePartwise("4.0", partList, listOf(part))
+//    private val scorePart = ScorePart("P1", "Part 1")
+//    private val partList = PartList(listOf(scorePart))
+//
+//    private val pitch = Pitch("C", 4, null)
+//    private val note = Note(pitch, 4, "whole")
+//
+//    private val clef = Clef("G", 2)
+//    private val time = Time(4, 4)
+//    private val key = Key(0)
+//    private val attributes = Attributes(1, key, time, clef)
+//
+//    private val measure = Measure(1, attributes, listOf(note))
+//    private val part = Part("P1", listOf(measure))
+//
+//    private val scorePartwise = ScorePartwise("4.0", partList, listOf(part))
 
     private val serializer = Xml.newSerializer()
 
-    fun serialize(file: File) {
+    fun serialize(file: File, scorePartwise: ScorePartwise) {
 
         val fos = FileOutputStream(file)
         try {
@@ -40,7 +40,6 @@ class MusicXmlSerializer {
                         "\"http://www.musicxml.org/dtds/partwise.dtd\"")
 
                 writeScorePartwise(scorePartwise)
-
                 serializer.endDocument()
                 serializer.flush()
             }
@@ -54,7 +53,7 @@ class MusicXmlSerializer {
         serializer.attribute(null, "version", scorePartwise.version)
 
         serializer.startTag(null, "part-list")
-        for(scorePart in partList.scoreParts) {
+        for(scorePart in scorePartwise.partList.scoreParts) {
             writeScorePart(scorePart)
         }
         serializer.endTag(null, "part-list")
@@ -78,15 +77,15 @@ class MusicXmlSerializer {
         serializer.startTag(null, "part")
         serializer.attribute(null, "id", part.id)
 
-        for (measure in part.measures) {
-            writeMeasure(measure)
+        for (i in 0 until part.measures.size) {
+            writeMeasure(part.measures[i], i + 1)
         }
         serializer.endTag(null, "part")
     }
 
-    private fun writeMeasure(measure: Measure) {
+    private fun writeMeasure(measure: Measure, number: Int) {
         serializer.startTag(null, "measure")
-        serializer.attribute(null, "number", measure.number.toString())
+        serializer.attribute(null, "number", number.toString())
 
         if(measure.attributes != null) {
             writeAttributes(measure.attributes)
@@ -102,21 +101,25 @@ class MusicXmlSerializer {
     private fun writeAttributes(attributes: Attributes) {
         serializer.startTag(null, "attributes")
 
-        writeTag("divisions", attributes.divisions.toString())
+        if(attributes.divisions != null)
+            writeTag("divisions", attributes.divisions.toString())
 
-        writeTagWithAttachments("key", listOf(
-            Pair("fifths", attributes.key.fifths.toString())
-        ))
+        if(attributes.key != null)
+            writeTagWithAttachments("key", listOf(
+                Pair("fifths", attributes.key.fifths.toString())
+            ))
 
-        writeTagWithAttachments("time", listOf(
-            Pair("beats", attributes.time.beats.toString()),
-            Pair("beat-type", attributes.time.beatType.toString()),
-        ))
+        if(attributes.time != null)
+            writeTagWithAttachments("time", listOf(
+                Pair("beats", attributes.time.beats.toString()),
+                Pair("beat-type", attributes.time.beatType.toString()),
+            ))
 
-        writeTagWithAttachments("clef", listOf(
-            Pair("sign", attributes.clef.sign),
-            Pair("line", attributes.clef.line.toString()),
-        ))
+        if(attributes.clef != null)
+            writeTagWithAttachments("clef", listOf(
+                Pair("sign", attributes.clef.sign),
+                Pair("line", attributes.clef.line.toString()),
+            ))
 
         serializer.endTag(null, "attributes")
     }
@@ -124,41 +127,95 @@ class MusicXmlSerializer {
     private fun writeNote(note: Note) {
         serializer.startTag(null, "note")
 
-        writeTagWithAttachments("pitch", listOf(
-            Pair("step", note.pitch.step),
-            Pair("octave", note.pitch.octave.toString())
-        ))
+        if(note.chord)
+            writeTag("chord", null)
+
+        if(note.rest)
+            writeTag("rest", null)
+
+        if(note.pitch != null) {
+            val pith = ArrayList<Pair<String, String>>(3)
+            pith.add(Pair("step", note.pitch.step))
+            if(note.pitch.alter != null)
+                pith.add(Pair("alter", note.pitch.alter.toString()))
+            pith.add(Pair("octave", note.pitch.octave.toString()))
+
+            writeTagWithAttachments("pitch", pith)
+        }
 
         writeTag("duration", note.duration.toString())
-        writeTag("type", note.type)
+
+        if(note.voice != null)
+            writeTag("voice", note.voice.toString())
+
+        writeTag("type", note.type.strValue)
+
+        if(note.accidental != null)
+            writeTag("accidental", note.accidental.strValue)
+
+        if(note.timeModification != null) {
+            val timeMod = ArrayList<Pair<String, String>>(3)
+            timeMod.add(Pair("actual-notes", note.timeModification.actualNotes.toString()))
+            timeMod.add(Pair("normal-notes", note.timeModification.normalNotes.toString()))
+            if(note.timeModification.normalType != null)
+                timeMod.add(Pair("normal-type", note.timeModification.normalType))
+
+            writeTagWithAttachments("time-modification", timeMod)
+        }
+
+        if(note.stem != null)
+            writeTag("stem", note.stem)
+
+        if(note.beams != null) {
+            for (i in 0 until note.beams.size) {
+                writeTag("beam", note.beams[i], listOf(Pair("number", (i+1).toString())))
+            }
+        }
+        
+        if(note.notations != null) {
+            writeNotations(note.notations)
+        }
+        
+        if(note.staff != null)
+            writeTag("staff", note.staff.toString())
 
         serializer.endTag(null, "note")
     }
 
+    private fun writeNotations(notations: Notations) {
+
+    }
+
     private fun writeTag(
         tag: String,
-        value: String,
-        attribute: String? = null,
-        attributeValue: String? = null
+        value: String?,
+        attributes: List<Pair<String, String>>? = null
     ) {
         serializer.startTag(null, tag)
-        if(attribute != null && attributeValue != null) {
-            serializer.attribute(null, attribute, attributeValue)
-        }
-        serializer.text(value)
+
+        if(attributes != null )
+            for(av in attributes) {
+                serializer.attribute(null, av.first, av.second)
+            }
+
+        if(value != null)
+            serializer.text(value)
+
         serializer.endTag(null, tag)
     }
 
     private fun writeTagWithAttachments(
         tag: String,
         values: List<Pair<String, String>>,
-        attribute: String? = null,
-        attributeValue: String? = null
+        attributes: List<Pair<String, String>>? = null
     ) {
         serializer.startTag(null, tag)
-        if(attribute != null && attributeValue != null) {
-            serializer.attribute(null, attribute, attributeValue)
-        }
+
+        if(attributes != null )
+            for(av in attributes) {
+                serializer.attribute(null, av.first, av.second)
+            }
+
         for (tv in values) {
             serializer.startTag(null, tv.first)
             serializer.text(tv.second)
