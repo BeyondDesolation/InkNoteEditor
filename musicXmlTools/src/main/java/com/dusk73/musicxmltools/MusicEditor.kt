@@ -49,6 +49,7 @@ class MusicEditor {
         updateMeasureAttributes(0, 0, Clef("G", 2))
         updateMeasureAttributes(0, Key(0), Time(4, 4))
         recalcDivisions()
+        updateMeasureDivisions()
     }
 
     // Не проработано

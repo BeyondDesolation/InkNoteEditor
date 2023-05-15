@@ -1,4 +1,4 @@
-package com.dusk73.dnoteeditor.custom_view.models
+package com.dusk73.noteeditor.custom_view.models
 
 data class ElementDrawInfo(
     var elementIndex: Int,

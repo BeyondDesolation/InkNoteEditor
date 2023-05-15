@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".view.editor.EditorFragment">
 
+
+    <Button
+        android:id="@+id/startStopPlaying"
+        style="@style/ButtonStyle1"
+        android:layout_width="64dp"
+        android:layout_marginTop="9dp"
+        android:text="@string/startPlay"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -34,13 +44,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.dusk73.dnoteeditor.custom_view.ScoreView
+            <com.dusk73.noteeditor.custom_view.ScoreView
                 android:id="@+id/scoreView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="32dp">
-            </com.dusk73.dnoteeditor.custom_view.ScoreView>
+            </com.dusk73.noteeditor.custom_view.ScoreView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

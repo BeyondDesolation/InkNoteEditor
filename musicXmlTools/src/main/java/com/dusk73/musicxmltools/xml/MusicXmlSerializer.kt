@@ -7,23 +7,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class MusicXmlSerializer {
-
-//    private val scorePart = ScorePart("P1", "Part 1")
-//    private val partList = PartList(listOf(scorePart))
-//
-//    private val pitch = Pitch("C", 4, null)
-//    private val note = Note(pitch, 4, "whole")
-//
-//    private val clef = Clef("G", 2)
-//    private val time = Time(4, 4)
-//    private val key = Key(0)
-//    private val attributes = Attributes(1, key, time, clef)
-//
-//    private val measure = Measure(1, attributes, listOf(note))
-//    private val part = Part("P1", listOf(measure))
-//
-//    private val scorePartwise = ScorePartwise("4.0", partList, listOf(part))
-
     private val serializer = Xml.newSerializer()
 
     fun serialize(file: File, scorePartwise: ScorePartwise) {

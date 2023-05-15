@@ -1,4 +1,4 @@
-package com.dusk73.dnoteeditor
+package com.dusk73.noteeditor
 
 import org.junit.Test
 

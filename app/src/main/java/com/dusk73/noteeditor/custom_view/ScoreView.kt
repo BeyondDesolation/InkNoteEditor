@@ -1,15 +1,14 @@
-package com.dusk73.dnoteeditor.custom_view
+package com.dusk73.noteeditor.custom_view
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import com.dusk73.dnoteeditor.R
-import com.dusk73.dnoteeditor.custom_view.models.*
+import com.dusk73.noteeditor.R
+import com.dusk73.noteeditor.custom_view.models.*
 import com.dusk73.musicxmltools.MusicEditor
 import com.dusk73.musicxmltools.enums.Accidental
 import com.dusk73.musicxmltools.enums.NoteType

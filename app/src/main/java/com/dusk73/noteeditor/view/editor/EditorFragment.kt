@@ -1,4 +1,4 @@
-package com.dusk73.dnoteeditor.view.editor
+package com.dusk73.noteeditor.view.editor
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,8 +11,10 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.dusk73.dnoteeditor.databinding.FragmentEditorBinding
+import com.dusk73.noteeditor.R
+import com.dusk73.noteeditor.databinding.FragmentEditorBinding
 import com.dusk73.musicxmltools.enums.Accidental
 import com.dusk73.musicxmltools.enums.NoteType
 
@@ -34,10 +36,21 @@ class EditorFragment : Fragment() {
         _binding = FragmentEditorBinding.inflate(inflater, container, false)
 
         setClickListeners()
+        bindLiveData()
         binding.scoreView.updateMusicEditor(viewModel.musicEditor)
         binding.scoreView.update()
 
         return binding.root
+    }
+
+    private fun bindLiveData() {
+        viewModel.isPlaying.observe(viewLifecycleOwner, Observer{
+            isPlaying ->
+            if(isPlaying)
+                binding.startStopPlaying.text = resources.getString(R.string.stopPlay)
+            else
+                binding.startStopPlaying.text = resources.getString(R.string.startPlay)
+        })
     }
 
     private fun setClickListeners() {
@@ -109,6 +122,10 @@ class EditorFragment : Fragment() {
             if(viewModel.deletePart(binding.scoreView.touchInfo))
                 binding.scoreView.update()
         }
+
+        binding.startStopPlaying.setOnClickListener {
+            startStopPlaying()
+        }
     }
 
     private fun addNote(type: NoteType, rest: Boolean = false) {
@@ -119,6 +136,10 @@ class EditorFragment : Fragment() {
     private fun changeAccidental(value: Accidental) {
         if(viewModel.changeAccidental(binding.scoreView.touchInfo, value))
             binding.scoreView.update()
+    }
+
+    private fun startStopPlaying() {
+        viewModel.startPlaying()
     }
 
     private fun getWritePermission() {
@@ -142,6 +163,12 @@ class EditorFragment : Fragment() {
             Log.i(TAG, "PERMISSION NOT GRANTED")
             false
         }
+    }
+
+    override fun onPause() {
+        if(viewModel.isPlaying.value!!)
+            viewModel.startPlaying()
+        super.onPause()
     }
 
     override fun onDestroyView() {

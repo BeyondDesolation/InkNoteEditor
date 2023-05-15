@@ -1,4 +1,4 @@
-package com.dusk73.dnoteeditor
+package com.dusk73.noteeditor
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

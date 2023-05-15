@@ -1,4 +1,4 @@
-package com.dusk73.dnoteeditor.custom_view
+package com.dusk73.noteeditor.custom_view
 
 import com.dusk73.musicxmltools.enums.NoteType
 

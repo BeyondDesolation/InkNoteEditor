@@ -1,14 +1,16 @@
-package com.dusk73.dnoteeditor.view.editor
+package com.dusk73.noteeditor.view.editor
 
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Environment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dusk73.dnoteeditor.custom_view.models.TouchInfo
+import com.dusk73.noteeditor.custom_view.models.TouchInfo
+import com.dusk73.noteeditor.services.ScorePlayer
 import com.dusk73.musicxmltools.MusicEditor
 import com.dusk73.musicxmltools.enums.Accidental
 import com.dusk73.musicxmltools.enums.NoteType
-import com.dusk73.musicxmltools.models.Attributes
 import com.dusk73.musicxmltools.models.Key
 import com.dusk73.musicxmltools.models.ScorePart
 import com.dusk73.musicxmltools.models.Time
@@ -22,10 +24,17 @@ import kotlin.math.abs
 class EditorViewModel : ViewModel() {
 
     private val musicXmlSerializer = MusicXmlSerializer()
+    private val scorePlayer = ScorePlayer()
     val musicEditor = MusicEditor()
 
-    fun save() {
+    private var _isPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isPlaying get(): LiveData<Boolean> = _isPlaying
 
+    init {
+        scorePlayer.setScorePartwise(musicEditor.scorePartwise)
+    }
+
+    fun save() {
         val file = createFile()
         musicXmlSerializer.serialize(file, musicEditor.scorePartwise)
     }
@@ -159,6 +168,16 @@ class EditorViewModel : ViewModel() {
         }
 
         return true
+    }
+
+    fun startPlaying() {
+        if(_isPlaying.value!!) {
+            _isPlaying.value = false
+            scorePlayer.stop()
+        }else{
+            _isPlaying.value = true
+            scorePlayer.start()
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
